@@ -1,0 +1,7 @@
+pandas
+googlemaps
+folium
+xyzservices
+matplotlib
+numpy
+
