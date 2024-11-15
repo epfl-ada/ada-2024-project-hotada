@@ -70,8 +70,9 @@ def targets_with_multiple_sources(targets_with_source,targets_for_sources) :
             if target in targets :
                 num_sources += 1
         if num_sources>1 :
-            return True
-    return False
+            print("There are targets with multiple sources")
+            return 
+    print("There aren't targets with multiple sources")
 
 def plot_proportions_of_experiments_given_TSO(df) :
     "Plots a pie chart of the proportions of experiments for each TSO from df with target sources"
@@ -86,4 +87,27 @@ def plot_proportions_of_experiments_given_TSO(df) :
     plt.pie(sources_reasearch_counts_chart.values(), labels=sources_reasearch_counts_chart.keys(), autopct='%1.1f%%', startangle=90)
     # Show the plot
     plt.title("Proportions of experiments given TSO")
+    plt.show()
+
+    
+def plot_disease(disease, df, sources) :  
+
+    df = df[df["Target Source Organism According to Curator or DataSource"].isin(sources)]
+    value_counts_country = df["Country"].value_counts().head(10)
+    value_counts_continent = df["Continent"].value_counts().head(10)
+    fig, axes = plt.subplots(1, 2, figsize=(12, 6))
+
+    axes[0].bar(value_counts_country.index, value_counts_country.values, color='skyblue')
+    axes[0].set_xticklabels(axes[0].get_xticklabels(), rotation=-45, ha='left')
+    axes[0].set_xlabel('Country')
+    axes[0].set_ylabel(f'Number of experiments on {disease}')
+    axes[0].set_title(f'Number of experiments on {disease} w.r.t. Country')
+
+    axes[1].bar(value_counts_continent.index, value_counts_continent.values)
+    axes[1].set_xticklabels(axes[1].get_xticklabels(), rotation=-45, ha='left')
+    axes[1].set_xlabel('Continent')
+    axes[1].set_ylabel(f'Number of experiments on {disease}')
+    axes[1].set_title(f'Number of experiments on {disease} w.r.t. Countinent')
+
+    plt.tight_layout()
     plt.show()

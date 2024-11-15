@@ -2,7 +2,7 @@ import folium
 from folium.plugins import HeatMap 
 import pandas as pd
 import googlemaps 
-import continents
+#import continents
 import os
 import xyzservices.providers as xyz
 import pickle 
@@ -47,10 +47,11 @@ def get_geocode(institution):
 
 
 def load_data():
-    if not os.path.exists('../../data/BindingDB_All_202411.pkl') and os.path.exists('../../data/BindingDB_All_202411_tsv.zip'):
-        df = pd.read_csv('../../data/BindingDB_All_202411_tsv.zip',sep='\t',compression='zip',on_bad_lines='skip',low_memory=False)
-        pickle.dump(df,open('../../data/BindingDB_All_202411.pkl','wb'))
+    if not os.path.exists('data/BindingDB_All_202411.pkl') and os.path.exists('data/BindingDB_All_202411_tsv.zip'):
+        df = pd.read_csv('data/BindingDB_All_202411_tsv.zip',sep='\t',compression='zip',on_bad_lines='skip',low_memory=False)
+        pickle.dump(df,open('data/BindingDB_All_202411.pkl','wb'))
     # if 
     else:
-        df = pd.read_pickle('../../data/BindingDB_All_202411.pkl')
+        df = pd.read_pickle('data/BindingDB_All_202411.pkl')
+
     return df
