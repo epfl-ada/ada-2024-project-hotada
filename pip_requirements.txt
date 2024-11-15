@@ -5,3 +5,8 @@ xyzservices
 matplotlib
 numpy
 PubChemPy
+seaborn
+scikit-learn
+rdkit
+transformers
+

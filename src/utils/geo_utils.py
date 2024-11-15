@@ -55,3 +55,79 @@ def load_data():
         df = pd.read_pickle('data/BindingDB_All_202411.pkl')
 
     return df
+
+
+def continents_pie_chart(dy) :
+    continent_institutions = dy.groupby('Continent')['Institution'].count()
+    total_institutions = continent_institutions.sum()
+    continent_institutions = continent_institutions[continent_institutions >= 0.05 * total_institutions]
+    continent_institutions['Others'] = total_institutions - continent_institutions.sum()
+
+    plt.figure(figsize=(8, 8))
+    plt.pie(continent_institutions, labels=continent_institutions.index, autopct='%1.1f%%', startangle=140)
+    plt.title('Institutions by Continent')
+    plt.show()
+
+def top_countries_bar_chart(dy) :
+    top_10_countries = dy.groupby('Country')['Count'].sum().nlargest(10)
+    plt.figure(figsize=(12, 6))
+    plt.bar(top_10_countries.index, top_10_countries.values)
+    plt.title('Top 10 Countries by Number of Contributions')
+    plt.xlabel('Country')
+    plt.ylabel('Number of Contributions')
+    plt.xticks(rotation=45)
+    plt.show()
+
+def contribs_by_continents_pie(dy) :
+    # Pie chart for number of contributions by continent, grouping those with < 5% as "Others"
+    continent_contribs = dy.groupby('Continent')['Count'].sum()
+    total_contribs = continent_contribs.sum()
+    continent_contribs = continent_contribs[continent_contribs >= 0.05 * total_contribs]
+    continent_contribs['Others'] = total_contribs - continent_contribs.sum()
+
+    plt.figure(figsize=(8, 8))
+    plt.pie(continent_contribs, labels=continent_contribs.index, autopct='%1.1f%%', startangle=140)
+    plt.title('Contributions by Continent')
+    plt.show()
+    
+def countries_with_most_institutions(dy) :
+    # Displaying a bar chart for number of institutions by country
+    top_10_institutions = dy.groupby('Country')['Institution'].count().nlargest(10)
+    plt.figure(figsize=(12, 6))
+    plt.bar(top_10_institutions.index, top_10_institutions.values)
+    plt.title('Top 10 Countries by Number of Institutions')
+    plt.xlabel('Country')
+    plt.ylabel('Number of Institutions')
+    plt.xticks(rotation=45)
+    plt.show()
+
+def institutions_per_continent(dy) :
+    continent_institutions_full = dy.groupby('Continent')['Institution'].count()
+
+    plt.figure(figsize=(12, 6))
+    plt.bar(continent_institutions_full.index, continent_institutions_full.values)
+    plt.title('Number of Institutions per Continent')
+    plt.xlabel('Continent')
+    plt.ylabel('Number of Contributing Institutions')
+    plt.xticks(rotation=45)
+    plt.show()
+
+def get_institution_locations(df):
+    full_locations = pickle.load(open('src/data/full_institution_locations.pkl', 'rb'))
+
+    df['Institution'].value_counts()
+    db = df['Institution'].value_counts()
+    db = db.reset_index()
+    db.columns = ['Institution', 'Count']
+    countries ={}
+    import src.utils.continents as continents
+    for k,v in full_locations.items():
+            components = v[0]['address_components']
+            country = next((component['long_name'] for component in components if 'country' in component['types']), 'Unknown')
+            countries[k] = country
+            
+    db['Country'] = db['Institution'].map(countries)
+    db['Continent'] = db['Country'].map(continents.get_continent)
+    db = db[db['Country'] != 'Unknown']
+    db = db[db['Continent'] != 'Unknown']
+    return db
