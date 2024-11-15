@@ -1,15 +1,15 @@
-# Drug-Drug Interaction Prediction w.r.t. Likeliness and Geographical Prevalence Analysis Project
+# Predicting Drug-Drug Interactions Based on Likeness and Geographical Prevalence
 
 ## Abstract 
-What impact does geography have on the development of drugs ?
+What impact does geography have on the development of drugs? 
 
 Does drug's origin matter in drug-drug interaction? The development of pharmaceuticals is a collaborative effort that often reflects the expertise and innovation of the institutions behind them. This project aims to investigate whether drugs developed within the same institutions exhibit superior interaction profiles compared to those developed independently. One may hypothesise that shared research environments, methodologies, and collaborative networks contribute to a higher likelihood of favorable interactions among drugs originating from the same institution. 
 
-Does the prevalence of a disease in a region have an effect on local drug development ? The world is highly interconnected and an outbreak of any disease anywhere is today a menace for the whole world. Is there however any trends one can observe in the location of drug research with respect to the geographical prevalence of a disease ?
+Does the prevalence of a disease in a region have an effect on local drug development? The world is highly interconnected and an outbreak of any disease anywhere is today a menace for the whole world. Is there however any trends one can observe in the location of drug research with respect to the geographical prevalence of a disease?
 
 ## Research Questions 
 1. **Institutional Influence on DDIs**: Do drugs developed in the same universities interact positively?
-2. **How does the prevalence of a disease in a region influence the amount and focus of research conducted in that region?
+2. **Regional Disease Influence on Research**: Does the prevalence of a disease in a region drive the amount and focus of research conducted there?  
 3. **Compatibility of Popular Drugs**: Do highly "likable" drugs, based on QED, exhibit good interactions?
 4. **Predictive DDI Modeling**: Can we predict interaction outcomes for novel drug pairs, and propose new candidates for future research? 
 
@@ -25,13 +25,16 @@ Does the prevalence of a disease in a region have an effect on local drug develo
 - Data augmentation
 
 **Analysing Institutions** 
-1. Match insitutions to country/continent
-2. Analyze global research trends 
-3. Compare amount of reaserch by countries and by continents
-4. Compare amount of research on major diseases by countries and by continents with the geographical prevalence of the diseases 
+1. Map institutions to their respective countries and continents
+2. Investigate global research patterns and trends across regions
+3. Compare the volume of research conducted by countries and continents
+4. Compare research efforts on major diseases with their geographical prevalence, analyzing how research activity aligns with disease presence across countries and continents
 
 **Analysing Likeness of Drug**
-1.
+1. Extract from the SMILES all relevant properties of the drug: molecular weight, Log P, hydrogen bond donors, acceptors, number of rotatable bonds and polar surface area.
+2. Apply Lipinski’s Rule of Five, QED scores, and other criteria (e.g., Veber’s Rule) to filter compounds for basic drug-likeness.
+3. Focus the project on the most ‘likable’ drugs identified by the intersection of criteria results
+
 **Drug-Drug Interaction**
 1. Extract a more extensive database on DDI with examples of `synergetic` interactions.
 2. Extract data on DDI from DrugBank and based on description cluster the interaction.
