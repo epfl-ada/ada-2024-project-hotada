@@ -4,4 +4,4 @@ folium
 xyzservices
 matplotlib
 numpy
-
+PubChemPy

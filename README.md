@@ -11,7 +11,7 @@ By analyzing DDI data from BindingDB and enriching it with institutional informa
 3. **Predictive DDI Modeling**: Can we predict interaction outcomes for novel drug pairs, and propose new candidates for future research?
 
 ## Proposed Additional Datasets
-- **DrugBank**: To cross-reference known DDIs and drug classification. Use the data on drug-interactions to classify based on description to either `synergetic` or `antagonistic` interaction. Use the `DrugBank ID of Ligand` to map the two databases.
+- **DrugBank**: To cross-reference known DDIs and drug classification. Use the data on drug-interactions to classify based on description. Use the `DrugBank ID of Ligand` to map the two databases. From our initial data preprocessing we saw that the main DrugBank database provides only the data on `antagonistic` interaction of drugs which can be then sorted by severity. We reached out to the support team of DrugBank to get access if any to third-party databases which could provide more insights on the DDI.
 
 ## Methods
 **Analysing Institutions** 
@@ -19,17 +19,18 @@ By analyzing DDI data from BindingDB and enriching it with institutional informa
 **Analysing Likeness of Drug**
 1.
 **Drug-Drug Interaction**
-1. Extract data on DDI from DrugBank and based on description cluster the interaction.
-   1) First embed the description possibly with BioBert
-   2) Cluster the data using K-Means 
-2. Visualize the drug interaction based on institution location.
-3. Try predicting the interaction by embeding smiles and training on DrugBank labeled data.
-4. Use the developped model to predict the DDI of likable drugs in specific geographical locations
+1. Extract a more extensive database on DDI with examples of `synergetic` interactions.
+2. Extract data on DDI from DrugBank and based on description cluster the interaction.
+   1) First embed the description possibly with BioBert 
+   2) Cluster the data using K-Means into 3 clusters based on severity `Major`, `Moderate` and `Minor`
+3. Visualize the drug interaction based on institution location.
+4. Try predicting the interaction by embeding smiles and training on DrugBank labeled data.
+5. Use the developped model to predict the DDI of `likable` drugs in specific geographical locations
 
 
 ## Proposed Timeline
 | Milestone         | Task Description                         | Deadline   |
-|--------------------|-----------------------------------------|------------|
+|-------------------|------------------------------------------|------------|
 | **Week 1**        | Finalize data preprocessing and cleaning | 2024-11-19 |
 | **Week 2**        | Labeling Drug Interaction                | 2024-11-26 |
 | **Week 3**        | Drug likability and interaction analysis | 2024-11-26 |
