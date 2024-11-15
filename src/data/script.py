@@ -78,9 +78,9 @@ def plot_proportions_of_experiments_given_TSO(df) :
     source_research_num = df_with_target_sources(df)["Target Source Organism According to Curator or DataSource"].value_counts()
     df_sources_reasearch = pd.DataFrame(list(source_research_num.items()), columns=['Source', 'Research count'])
     sources_reasearch_counts_chart = dict()
-    for index, row in df_sources_reasearch.head(10).iterrows() :
+    for index, row in df_sources_reasearch.head(5).iterrows() :
         sources_reasearch_counts_chart[row["Source"]] = row["Research count"]
-    sources_reasearch_counts_chart["Other"] = df_sources_reasearch.iloc[10:]["Research count"].sum() 
+    sources_reasearch_counts_chart["Other"] = df_sources_reasearch.iloc[5:]["Research count"].sum() 
     # Create a pie chart
     plt.figure(figsize=(6, 6))  # Optional: set the figure size
     plt.pie(sources_reasearch_counts_chart.values(), labels=sources_reasearch_counts_chart.keys(), autopct='%1.1f%%', startangle=90)
