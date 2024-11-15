@@ -2,3 +2,4 @@
 data/BindingDB_all.db
 data/BindingDB_All.pkl
 data/BindingDB_All.tsv
+src/utils/__pycache__/*
