@@ -32,7 +32,8 @@ def get_map(located,tiles="Stadia.AlidadeSmooth"):
     return m
 
 def get_cached_locations(db):
-    location = pickle.load(open('../data/institution_locations.pkl', 'rb'))
+    db = db.groupby('Institution').size().reset_index(name='Count')
+    location = pickle.load(open('src/data/institution_locations.pkl', 'rb'))
     db['Lat'] = db['Institution'].map(lambda x: location.get(x, {'lat':0,'lng':0})['lat'])
     db['Long'] = db['Institution'].map(lambda x: location.get(x, {'lat':0,'lng':0})['lng'])
 
