@@ -5,3 +5,4 @@ data/BindingDB_All.tsv
 src/utils/__pycache__/*
 src/data/df_with_countries_continents.pkl
 data/
+.ipynb_checkpoints/results-checkpoint.ipynb
