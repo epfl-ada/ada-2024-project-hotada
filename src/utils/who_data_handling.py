@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 from sklearn.preprocessing import StandardScaler
 import plotly.express as px
 import plotly.graph_objs as go
+import statsmodels.formula.api as smf
 
 code_to_region_WHO ={
  'ABW': 'AMR',
@@ -696,3 +697,147 @@ def plot_prevalence_wrt_research(df_research) :
     fig = create_interactive_plot(country_data_Staphylococcus_aureus, 'Staphylococcus_aureus')
     fig.show()  
 
+
+
+### OLS functions
+
+def normalize_rows_of_df(df):
+    mean = df.mean(axis=1)
+    std = df.std(axis=1)
+    df = df.apply(lambda x: (x - mean) / std, axis=0)
+    return df
+
+def research_of_diseases_per_country_df():
+    hiv = get_research_per_country('HIV',dx, HIV_sources)
+    tuberculosis = get_research_per_country('Tuberculosis',dx, Tuberculosis_sources)
+    hepatitis = get_research_per_country('Hepatitis',dx, Hepatitis_sources)
+    plasmodium_falciparum = get_research_per_country('Plasmodium falciparum',dx, Plasmodium_falciparum_sources)
+    poliovirus = get_research_per_country('Poliovirus',dx, Poliovirus_sources)
+    plasmodium_vivax = get_research_per_country('Plasmodium vivax',dx, Plasmodium_vivax_sources)
+    escherichia_coli = get_research_per_country('Escherichia coli',dx, Escherichia_coli_sources)
+    staphylococcus_aureus = get_research_per_country('Staphylococcus aureus',dx,Staphylococcus_aureus_sources)
+
+    diseases_data = [plasmodium_falciparum, hiv, poliovirus, plasmodium_vivax, tuberculosis, escherichia_coli, hepatitis, staphylococcus_aureus]
+    df_country = pd.DataFrame()
+
+    for disease in disease_names:
+        df_country[disease] = diseases_data[disease_names.index(disease)]
+    df_country.fillna(0, inplace=True)
+    df_country = df_country.transpose()
+    df_country = normalize_rows_of_df(df_country)
+    return df_country
+
+def research_of_diseases_per_region_df():
+    hiv = get_research_per_region('HIV',dx, HIV_sources)
+    tuberculosis = get_research_per_region('Tuberculosis',dx, Tuberculosis_sources)
+    hepatitis = get_research_per_region('Hepatitis',dx, Hepatitis_sources)
+    plasmodium_falciparum = get_research_per_region('Plasmodium falciparum',dx, Plasmodium_falciparum_sources)
+    poliovirus = get_research_per_region('Poliovirus',dx, Poliovirus_sources)
+    plasmodium_vivax = get_research_per_region('Plasmodium vivax',dx, Plasmodium_vivax_sources)
+    escherichia_coli = get_research_per_region('Escherichia coli',dx, Escherichia_coli_sources)
+    staphylococcus_aureus = get_research_per_region('Staphylococcus aureus',dx,Staphylococcus_aureus_sources)
+
+    diseases_data = [plasmodium_falciparum, hiv, poliovirus, plasmodium_vivax, tuberculosis, escherichia_coli, hepatitis, staphylococcus_aureus]
+    region_codes = ['AFR', 'AMR', 'EMR', 'EUR', 'SEAR', 'WPR']
+    df = pd.DataFrame(columns = region_codes)
+    for disease in disease_names:
+        df.loc[disease] = diseases_data[disease_names.index(disease)]
+    df.fillna(0, inplace=True)
+    df = normalize_rows_of_df(df)
+    return df
+
+def concatenate_disease_and_research_dfs(diseases_df, research_df):
+    diseases_df_suffix = diseases_df.add_suffix('_disease')
+    research_df_suffix = research_df.add_suffix('_research')
+    df = pd.concat([diseases_df_suffix, research_df_suffix], axis=1)
+    return df
+
+def region_region_smf_model(data):
+
+    region_codes_disease = 'AFR_disease + AMR_disease + EMR_disease + EUR_disease + SEAR_disease + WPR_disease'
+    region_codes_research = ['AFR_research', 'AMR_research', 'EMR_research', 'EUR_research', 'SEAR_research', 'WPR_research']
+    coef_df = pd.DataFrame()
+    p_value_df = pd.DataFrame()
+    for region_research in region_codes_research:
+        region_mod = smf.ols(formula=f'{region_research} ~ {region_codes_disease}', data=df, missing='drop')
+        region_res = region_mod.fit()
+        region_coef = region_res.params
+        region_coef = region_coef[1:]
+        region_p_values = region_res.pvalues[1:]
+        coef_df[region_research] = region_coef
+        p_value_df[region_research] = region_p_values
+      
+    return coef_df, p_value_df
+
+def region_region_heatmap(coef_df, p_value_df):
+
+    fig, ax = plt.subplots(figsize=(8, 6))
+    coef_df = coef_df.transpose()
+    p_value_df = p_value_df.transpose()
+    # Plot the heatmap from coef_df
+    sns.heatmap(coef_df, 
+                annot=True, 
+                fmt=".2f", 
+                cmap="coolwarm", 
+                cbar=True, 
+                linewidths=0.5, 
+                linecolor='gray', 
+                ax=ax)
+
+    # Highlight cells where p_value > 0.95 with thicker edges
+    for i in range(p_value_df.shape[0]):
+        for j in range(p_value_df.shape[1]):
+            if p_value_df.iloc[i, j] < 0.1:
+                ax.add_patch(plt.Rectangle((j, i), 1, 1, fill=False, edgecolor='black', lw=3))
+
+    # Adjust axis labels
+    ax.set_xlabel("Rows")
+    ax.set_ylabel("Columns")
+    ax.set_xticklabels(coef_df.columns)
+    ax.set_yticklabels(coef_df.index, rotation=0)
+
+def region_country_smf_model(data, research_column_names):
+
+    region_codes_disease = 'AFR_disease + AMR_disease + EMR_disease + EUR_disease + SEAR_disease + WPR_disease'
+    coef_df = pd.DataFrame()
+    p_value_df = pd.DataFrame()
+    for country_research in research_column_names:
+        region_mod = smf.ols(formula=f'{country_research} ~ {region_codes_disease}', data=df, missing='drop')
+        region_res = region_mod.fit()
+        region_coef = region_res.params
+        region_coef = region_coef[1:]
+        region_p_values = region_res.pvalues[1:]
+        coef_df[country_research] = region_coef
+        p_value_df[country_research] = region_p_values
+
+    region_codes = ['AFR', 'AMR', 'EMR', 'EUR', 'SEAR', 'WPR']
+    total_region_cases = np.zeros(len(region_codes))
+    significant_research_in_same_region = np.zeros(len(region_codes))
+
+    return coef_df, p_value_df
+
+def region_country_heatmap(coef_df, p_value_df):
+    coef_df = coef_df.transpose()
+    p_value_df = p_value_df.transpose()
+    fig, ax = plt.subplots(figsize=(8, 6))
+    # Plot the heatmap from coef_df
+    sns.heatmap(coef_df, 
+                annot=True, 
+                fmt=".2f", 
+                cmap="coolwarm", 
+                cbar=True, 
+                linewidths=0.5, 
+                linecolor='gray', 
+                ax=ax)
+
+    # Highlight cells where p_value > 0.95 with thicker edges
+    for i in range(p_value_df.shape[0]):
+        for j in range(p_value_df.shape[1]):
+            if p_value_df.iloc[i, j] < 0.1:
+                ax.add_patch(plt.Rectangle((j, i), 1, 1, fill=False, edgecolor='black', lw=3))
+
+    # Adjust axis labels
+    ax.set_xlabel("Rows")
+    ax.set_ylabel("Columns")
+    ax.set_xticklabels(coef_df.columns)
+    ax.set_yticklabels(coef_df.index, rotation=0)
