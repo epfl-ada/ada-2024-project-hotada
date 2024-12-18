@@ -1,8 +1,10 @@
 import pandas as pd
 import pickle
 import seaborn as sns
+import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import MinMaxScaler
 import plotly.express as px
 import plotly.graph_objs as go
 import statsmodels.formula.api as smf
@@ -238,6 +240,111 @@ code_to_region_WHO ={
  'ZWE': 'AFR'
 }
 
+country_to_code =  {
+    'United States': 'USA',
+    'China': 'CHN',
+    'Germany': 'DEU',
+    'Italy': 'ITA',
+    'United Kingdom': 'GBR',
+    'France': 'FRA',
+    'India': 'IND',
+    'Japan': 'JPN',
+    'South Korea': 'KOR',
+    'Canada': 'CAN',
+    'Switzerland': 'CHE',
+    'Poland': 'POL',
+    'Australia': 'AUS',
+    'Belgium': 'BEL',
+    'Netherlands': 'NLD',
+    'Spain': 'ESP',
+    'Denmark': 'DNK',
+    'Sweden': 'SWE',
+    'Egypt': 'EGY',
+    'New Zealand': 'NZL',
+    'Lithuania': 'LTU',
+    'Israel': 'ISR',
+    'Austria': 'AUT',
+    'South Africa': 'ZAF',
+    'Pakistan': 'PAK',
+    'Singapore': 'SGP',
+    'Slovenia': 'SVN',
+    'Greece': 'GRC',
+    'Finland': 'FIN',
+    'Russia': 'RUS',
+    'Brazil': 'BRA',
+    'Iran': 'IRN',
+    'Saudi Arabia': 'SAU',
+    'Portugal': 'PRT',
+    'Malaysia': 'MYS',
+    'Thailand': 'THA',
+    'Norway': 'NOR',
+    'Hungary': 'HUN',
+    'Bangladesh': 'BGD',
+    'Mexico': 'MEX',
+    'Argentina': 'ARG',
+    'Jordan': 'JOR',
+    'United Arab Emirates': 'ARE',
+    'Slovakia': 'SVK',
+    'Ireland': 'IRL',
+    'Romania': 'ROU',
+    'Chile': 'CHL',
+    'Serbia': 'SRB',
+    'Philippines': 'PHL',
+    'Estonia': 'EST',
+    'Ukraine': 'UKR',
+    'Monaco': 'MCO',
+    'Colombia': 'COL',
+    'Croatia': 'HRV',
+    'Morocco': 'MAR',
+    'Tunisia': 'TUN',
+    'Indonesia': 'IDN',
+    'Latvia': 'LVA',
+    'Vietnam': 'VNM',
+    'Ecuador': 'ECU',
+    'Bulgaria': 'BGR',
+    'Zambia': 'ZMB',
+    'Venezuela': 'VEN',
+    'Lebanon': 'LBN',
+    'Rwanda': 'RWA',
+    'Oman': 'OMN',
+    'Luxembourg': 'LUX',
+    'Cyprus': 'CYP',
+    'Uruguay': 'URY',
+    'Botswana': 'BWA',
+    'Algeria': 'DZA',
+    'Grenada': 'GRD',
+    'Jamaica': 'JAM',
+    'Kuwait': 'KWT',
+    'Sudan': 'SDN',
+    'Peru': 'PER',
+    'Qatar': 'QAT',
+    'Zimbabwe': 'ZWE',
+    'Bosnia and Herzegovina': 'BIH',
+    'Sri Lanka': 'LKA',
+    'Nepal': 'NPL',
+    'Armenia': 'ARM',
+    'Kenya': 'KEN',
+    'Cuba': 'CUB',
+    'Ethiopia': 'ETH',
+    'Nigeria': 'NGA'
+}
+
+HIV_sources = ['Human immunodeficiency virus 1', 'Human immunodeficiency virus', 'Human immunodeficiency virus type 1 group M subtype B (isolate BRU/LAI)', 'Human immunodeficiency virus type 1 group M subtype B (isolate YU-2)', 'Human immunodeficiency virus type 1 group M subtype B (isolate HXB2)', 'Human immunodeficiency virus 2', 'Human immunodeficiency virus type 1 group M subtype B (isolate PCV12)', 'Human immunodeficiency virus type 1 group M subtype B (isolate MN)']
+
+Plasmodium_falciparum_sources = ['Plasmodium falciparum', 'Plasmodium falciparum (isolate 3D7)', 'Plasmodium falciparum (isolate K1 / Thailand)', 'Plasmodium falciparum (isolate FcB1 / Columbia)']
+
+Poliovirus_sources = ['Poliovirus type 1 (strain Mahoney)']
+
+Plasmodium_vivax_sources = ['Plasmodium vivax']
+
+Tuberculosis_sources = ['Mycobacterium tuberculosis', 'Mycobacterium tuberculosis H37Rv']
+
+Hepatitis_C_sources = ['Hepatitis C virus', 'Hepatitis C virus genotype 1a (isolate H)', 'Hepatitis C virus genotype 1b (isolate BK)', 'Hepatitis C virus genotype 3a (isolate NZL1)', 'Hepatitis C virus genotype 2b (isolate HC-J8)', 'Hepatitis C virus genotype 1b (isolate Taiwan)', 'Hepatitis C virus genotype 2', 'Hepatitis C virus genotype 4a (isolate ED43)', 'Hepatitis C virus genotype 6a (isolate EUHK2)']
+
+Escherichia_coli_sources = ['Escherichia coli', 'Escherichia coli str. K-12 substr. MG1655', 'Escherichia coli (strain UTI89 / UPEC)', 'Escherichia coli (strain K12)', 'Escherichia coli O157:H7', 'Escherichia coli O6']
+
+Staphylococcus_aureus_sources = ['Staphylococcus aureus', 'Staphylococcus aureus (strain MRSA252)', 'Staphylococcus aureus (strain Mu50 / ATCC 700699)', 'Staphylococcus aureus (strain MW2)', 'Staphylococcus aureus (strain NCTC 8325)']
+
 disease_names = ["Plasmodium Falciparum", "Human Immunodeficiency Virus",
                   "Poliovirus", "Plasmodium vivax", 
                   "Mycobacterium tuberculosis", "Escherichia coli", "Hepatitis C", "Staphylococcus aureus"]
@@ -342,7 +449,10 @@ def plot_who_heatmap():
     first_code_column = code_column.iloc[:, 0]
     all_region_cases.drop(columns=['Code'], inplace=True)
 
-    scaler = StandardScaler()
+    # scaler = StandardScaler()
+    # all_region_cases = pd.DataFrame(scaler.fit_transform(all_region_cases), columns=all_region_cases.columns)
+
+    scaler = MinMaxScaler()
     all_region_cases = pd.DataFrame(scaler.fit_transform(all_region_cases), columns=all_region_cases.columns)
 
     all_region_cases.insert(0, 'Cases', first_code_column)
@@ -352,123 +462,6 @@ def plot_who_heatmap():
     plt.figure(figsize=(10, 7))
     sns.heatmap(heatmap_data, fmt=".2f", cmap='coolwarm')
     plt.show()
-
-def df_regional_prevalence_for_each_disease():
-    pf_malaria_region_cases = country_cases_to_region_cases_per_1000(pf_malaria_data, region_population)
-    hiv_region_cases = country_cases_to_region_cases_per_1000(hiv_data, region_population)
-    polio_region_cases = country_cases_to_region_cases_per_1000(polio_data, region_population)
-    pv_malaria_region_cases = country_cases_to_region_cases_per_1000(pv_malaria_data, region_population)
-    tuberculosis_region_cases = country_cases_to_region_cases_per_1000(tuberculosis_data, region_population)
-    escherichia_coli_region_cases = country_cases_to_region_cases_per_1000(escherichia_coli_data, region_population)
-    hepatitis_c_region_cases = country_cases_to_region_cases_per_1000(hepatitis_c_data, region_population)
-    staphylococcus_aureus_region_cases = country_cases_to_region_cases_per_1000(staphylococcus_aureus_data, region_population)
-
-
-    all_region_cases = [pf_malaria_region_cases, hiv_region_cases, polio_region_cases, pv_malaria_region_cases, tuberculosis_region_cases, escherichia_coli_region_cases, hepatitis_c_region_cases, staphylococcus_aureus_region_cases]
-
-    df = pd.DataFrame()
-    
-    extracted_cases_per_1000 = [df['Cases per 1000'] for df in all_region_cases]
-    df = pd.DataFrame(extracted_cases_per_1000, index=disease_names)
-
-    for i in range(len(df.columns)):
-        df.rename(columns={i: region_codes[i]}, inplace=True)
-
-    return df
-
-
-
-
-
-country_to_code =  {
-    'United States': 'USA',
-    'China': 'CHN',
-    'Germany': 'DEU',
-    'Italy': 'ITA',
-    'United Kingdom': 'GBR',
-    'France': 'FRA',
-    'India': 'IND',
-    'Japan': 'JPN',
-    'South Korea': 'KOR',
-    'Canada': 'CAN',
-    'Switzerland': 'CHE',
-    'Poland': 'POL',
-    'Australia': 'AUS',
-    'Belgium': 'BEL',
-    'Netherlands': 'NLD',
-    'Spain': 'ESP',
-    'Denmark': 'DNK',
-    'Sweden': 'SWE',
-    'Egypt': 'EGY',
-    'New Zealand': 'NZL',
-    'Lithuania': 'LTU',
-    'Israel': 'ISR',
-    'Austria': 'AUT',
-    'South Africa': 'ZAF',
-    'Pakistan': 'PAK',
-    'Singapore': 'SGP',
-    'Slovenia': 'SVN',
-    'Greece': 'GRC',
-    'Finland': 'FIN',
-    'Russia': 'RUS',
-    'Brazil': 'BRA',
-    'Iran': 'IRN',
-    'Saudi Arabia': 'SAU',
-    'Portugal': 'PRT',
-    'Malaysia': 'MYS',
-    'Thailand': 'THA',
-    'Norway': 'NOR',
-    'Hungary': 'HUN',
-    'Bangladesh': 'BGD',
-    'Mexico': 'MEX',
-    'Argentina': 'ARG',
-    'Jordan': 'JOR',
-    'United Arab Emirates': 'ARE',
-    'Slovakia': 'SVK',
-    'Ireland': 'IRL',
-    'Romania': 'ROU',
-    'Chile': 'CHL',
-    'Serbia': 'SRB',
-    'Philippines': 'PHL',
-    'Estonia': 'EST',
-    'Ukraine': 'UKR',
-    'Monaco': 'MCO',
-    'Colombia': 'COL',
-    'Croatia': 'HRV',
-    'Morocco': 'MAR',
-    'Tunisia': 'TUN',
-    'Indonesia': 'IDN',
-    'Latvia': 'LVA',
-    'Vietnam': 'VNM',
-    'Ecuador': 'ECU',
-    'Bulgaria': 'BGR',
-    'Zambia': 'ZMB',
-    'Venezuela': 'VEN',
-    'Lebanon': 'LBN',
-    'Rwanda': 'RWA',
-    'Oman': 'OMN',
-    'Luxembourg': 'LUX',
-    'Cyprus': 'CYP',
-    'Uruguay': 'URY',
-    'Botswana': 'BWA',
-    'Algeria': 'DZA',
-    'Grenada': 'GRD',
-    'Jamaica': 'JAM',
-    'Kuwait': 'KWT',
-    'Sudan': 'SDN',
-    'Peru': 'PER',
-    'Qatar': 'QAT',
-    'Zimbabwe': 'ZWE',
-    'Bosnia and Herzegovina': 'BIH',
-    'Sri Lanka': 'LKA',
-    'Nepal': 'NPL',
-    'Armenia': 'ARM',
-    'Kenya': 'KEN',
-    'Cuba': 'CUB',
-    'Ethiopia': 'ETH',
-    'Nigeria': 'NGA'
-}
-
 
 def df_institutions_target_country_region_WHO(df,locations) :
     dx = df[['Institution', 'Target Source Organism According to Curator or DataSource']].copy()
@@ -561,8 +554,6 @@ def plot_prevalence_wrt_research(df_research) :
 
     #HIV
 
-    HIV_sources = ['Human immunodeficiency virus 1', 'Human immunodeficiency virus', 'Human immunodeficiency virus type 1 group M subtype B (isolate BRU/LAI)', 'Human immunodeficiency virus type 1 group M subtype B (isolate YU-2)', 'Human immunodeficiency virus type 1 group M subtype B (isolate HXB2)', 'Human immunodeficiency virus 2', 'Human immunodeficiency virus type 1 group M subtype B (isolate PCV12)', 'Human immunodeficiency virus type 1 group M subtype B (isolate MN)']
-
     df_HIV = df_research[df_research["Target Source Organism According to Curator or DataSource"].isin(HIV_sources)]
     research_counts_HIV_country = df_HIV["Code"].value_counts()
     country_data_HIV = pd.merge(
@@ -573,12 +564,13 @@ def plot_prevalence_wrt_research(df_research) :
     )
     country_data_HIV.fillna(0, inplace=True)
 
+    country_data_HIV["Cases per 1000"] = (country_data_HIV["Cases per 1000"]-country_data_HIV["Cases per 1000"].min())/(country_data_HIV["Cases per 1000"].max() -country_data_HIV["Cases per 1000"].min())
+    country_data_HIV["count"] = (country_data_HIV["count"]-country_data_HIV["count"].min())/(country_data_HIV["count"].max() -country_data_HIV["count"].min())
+
     fig = create_interactive_plot(country_data_HIV, 'HIV')
     fig.show()
 
     #Pf Malaria
-
-    Plasmodium_falciparum_sources = ['Plasmodium falciparum', 'Plasmodium falciparum (isolate 3D7)', 'Plasmodium falciparum (isolate K1 / Thailand)', 'Plasmodium falciparum (isolate FcB1 / Columbia)']
 
     df_Plasmodium_falciparum = df_research[df_research["Target Source Organism According to Curator or DataSource"].isin(Plasmodium_falciparum_sources)]
     research_counts_Plasmodium_falciparum_country = df_Plasmodium_falciparum["Code"].value_counts()
@@ -590,12 +582,13 @@ def plot_prevalence_wrt_research(df_research) :
     )
     country_data_Plasmodium_falciparum.fillna(0, inplace=True)
 
+    country_data_Plasmodium_falciparum["Cases per 1000"] = (country_data_Plasmodium_falciparum["Cases per 1000"]-country_data_Plasmodium_falciparum["Cases per 1000"].min())/(country_data_Plasmodium_falciparum["Cases per 1000"].max() -country_data_Plasmodium_falciparum["Cases per 1000"].min())
+    country_data_Plasmodium_falciparum["count"] = (country_data_Plasmodium_falciparum["count"]-country_data_Plasmodium_falciparum["count"].min())/(country_data_Plasmodium_falciparum["count"].max() -country_data_Plasmodium_falciparum["count"].min())
+
     fig = create_interactive_plot(country_data_Plasmodium_falciparum, 'Plasmodium falciparum')
     fig.show()
 
     # Poliovirus
-
-    Poliovirus_sources = ['Poliovirus type 1 (strain Mahoney)']
 
     df_Poliovirus = df_research[df_research["Target Source Organism According to Curator or DataSource"].isin(Poliovirus_sources)]
     research_counts_Poliovirus_country = df_Poliovirus["Code"].value_counts()
@@ -607,13 +600,13 @@ def plot_prevalence_wrt_research(df_research) :
     )
     country_data_Poliovirus.fillna(0, inplace=True)
 
+    country_data_Poliovirus["Cases per 1000"] = (country_data_Poliovirus["Cases per 1000"]-country_data_Poliovirus["Cases per 1000"].min())/(country_data_Poliovirus["Cases per 1000"].max() -country_data_Poliovirus["Cases per 1000"].min())
+    country_data_Poliovirus["count"] = (country_data_Poliovirus["count"]-country_data_Poliovirus["count"].min())/(country_data_Poliovirus["count"].max() -country_data_Poliovirus["count"].min())
+
     fig = create_interactive_plot(country_data_Poliovirus,'Poliovirus')
     fig.show()
 
-
     #Plasmodium vivax
-
-    Plasmodium_vivax_sources = ['Plasmodium vivax']
 
     df_Plasmodium_vivax = df_research[df_research["Target Source Organism According to Curator or DataSource"].isin(Plasmodium_vivax_sources)]
     research_counts_Plasmodium_vivax_country = df_Plasmodium_vivax["Code"].value_counts()
@@ -625,13 +618,14 @@ def plot_prevalence_wrt_research(df_research) :
     )
     country_data_Plasmodium_vivax.fillna(0, inplace=True)
 
+    country_data_Plasmodium_vivax["Cases per 1000"] = (country_data_Plasmodium_vivax["Cases per 1000"]-country_data_Plasmodium_vivax["Cases per 1000"].min())/(country_data_Plasmodium_vivax["Cases per 1000"].max() -country_data_Plasmodium_vivax["Cases per 1000"].min())
+    country_data_Plasmodium_vivax["count"] = (country_data_Plasmodium_vivax["count"]-country_data_Plasmodium_vivax["count"].min())/(country_data_Plasmodium_vivax["count"].max() -country_data_Plasmodium_vivax["count"].min())
+
     fig = create_interactive_plot(country_data_Plasmodium_vivax, 'Plasmodium vivax')
     fig.show()
 
 
     #Tuberculosis
-
-    Tuberculosis_sources = ['Mycobacterium tuberculosis', 'Mycobacterium tuberculosis H37Rv']
 
     df_Tuberculosis = df_research[df_research["Target Source Organism According to Curator or DataSource"].isin(Tuberculosis_sources)]
     research_counts_Tuberculosis_country = df_Tuberculosis["Code"].value_counts()
@@ -643,12 +637,13 @@ def plot_prevalence_wrt_research(df_research) :
     )
     country_data_Tuberculosis.fillna(0, inplace=True)
 
+    country_data_Tuberculosis["Cases per 1000"] = (country_data_Tuberculosis["Cases per 1000"]-country_data_Tuberculosis["Cases per 1000"].min())/(country_data_Tuberculosis["Cases per 1000"].max() -country_data_Tuberculosis["Cases per 1000"].min())
+    country_data_Tuberculosis["count"] = (country_data_Tuberculosis["count"]-country_data_Tuberculosis["count"].min())/(country_data_Tuberculosis["count"].max() -country_data_Tuberculosis["count"].min())
+
     fig = create_interactive_plot(country_data_Tuberculosis, 'Tuberculosis')
     fig.show()
 
     #Hepatitis C
-
-    Hepatitis_C_sources = ['Hepatitis C virus', 'Hepatitis C virus genotype 1a (isolate H)', 'Hepatitis C virus genotype 1b (isolate BK)', 'Hepatitis C virus genotype 3a (isolate NZL1)', 'Hepatitis C virus genotype 2b (isolate HC-J8)', 'Hepatitis C virus genotype 1b (isolate Taiwan)', 'Hepatitis C virus genotype 2', 'Hepatitis C virus genotype 4a (isolate ED43)', 'Hepatitis C virus genotype 6a (isolate EUHK2)']
 
     df_Hepatitis_C = df_research[df_research["Target Source Organism According to Curator or DataSource"].isin(Hepatitis_C_sources)]
     research_counts_Hepatitis_C_country = df_Hepatitis_C["Code"].value_counts()
@@ -660,12 +655,13 @@ def plot_prevalence_wrt_research(df_research) :
     )
     country_data_Hepatitis_C.fillna(0, inplace=True)
 
+    country_data_Hepatitis_C["Cases per 1000"] = (country_data_Hepatitis_C["Cases per 1000"]-country_data_Hepatitis_C["Cases per 1000"].min())/(country_data_Hepatitis_C["Cases per 1000"].max() -country_data_Hepatitis_C["Cases per 1000"].min())
+    country_data_Hepatitis_C["count"] = (country_data_Hepatitis_C["count"]-country_data_Hepatitis_C["count"].min())/(country_data_Hepatitis_C["count"].max() -country_data_Hepatitis_C["count"].min())
+
     fig = create_interactive_plot(country_data_Hepatitis_C, 'Hepatitis C')
     fig.show()
 
     #Escherichia coli
-
-    Escherichia_coli_sources = ['Escherichia coli', 'Escherichia coli str. K-12 substr. MG1655', 'Escherichia coli (strain UTI89 / UPEC)', 'Escherichia coli (strain K12)', 'Escherichia coli O157:H7', 'Escherichia coli O6']
 
     df_Escherichia_coli = df_research[df_research["Target Source Organism According to Curator or DataSource"].isin(Escherichia_coli_sources)]
     research_counts_Escherichia_coli_country = df_Escherichia_coli["Code"].value_counts()
@@ -677,12 +673,13 @@ def plot_prevalence_wrt_research(df_research) :
     )
     country_data_Escherichia_coli.fillna(0, inplace=True)
 
+    country_data_Escherichia_coli["Cases per 1000"] = (country_data_Escherichia_coli["Cases per 1000"]-country_data_Escherichia_coli["Cases per 1000"].min())/(country_data_Escherichia_coli["Cases per 1000"].max() -country_data_Escherichia_coli["Cases per 1000"].min())
+    country_data_Escherichia_coli["count"] = (country_data_Escherichia_coli["count"]-country_data_Escherichia_coli["count"].min())/(country_data_Escherichia_coli["count"].max() -country_data_Escherichia_coli["count"].min())
+
     fig = create_interactive_plot(country_data_Escherichia_coli, 'Escherichia coli')
     fig.show()  
 
     #Staphylococcus aureus
-
-    Staphylococcus_aureus_sources = ['Staphylococcus aureus', 'Staphylococcus aureus (strain MRSA252)', 'Staphylococcus aureus (strain Mu50 / ATCC 700699)', 'Staphylococcus aureus (strain MW2)', 'Staphylococcus aureus (strain NCTC 8325)']
 
     df_Staphylococcus_aureus = df_research[df_research["Target Source Organism According to Curator or DataSource"].isin(Staphylococcus_aureus_sources)]
     research_counts_Staphylococcus_aureus_country = df_Staphylococcus_aureus["Code"].value_counts()
@@ -694,10 +691,49 @@ def plot_prevalence_wrt_research(df_research) :
     )
     country_data_Staphylococcus_aureus.fillna(0, inplace=True)
 
+    country_data_Staphylococcus_aureus["Cases per 1000"] = (country_data_Staphylococcus_aureus["Cases per 1000"]-country_data_Staphylococcus_aureus["Cases per 1000"].min())/(country_data_Staphylococcus_aureus["Cases per 1000"].max() -country_data_Staphylococcus_aureus["Cases per 1000"].min())
+    country_data_Staphylococcus_aureus["count"] = (country_data_Staphylococcus_aureus["count"]-country_data_Staphylococcus_aureus["count"].min())/(country_data_Staphylococcus_aureus["count"].max() -country_data_Staphylococcus_aureus["count"].min())
+
     fig = create_interactive_plot(country_data_Staphylococcus_aureus, 'Staphylococcus_aureus')
     fig.show()  
 
 
+def df_regional_prevalence_for_each_disease():
+    pf_malaria_region_cases = country_cases_to_region_cases_per_1000(pf_malaria_data, region_population)
+    hiv_region_cases = country_cases_to_region_cases_per_1000(hiv_data, region_population)
+    polio_region_cases = country_cases_to_region_cases_per_1000(polio_data, region_population)
+    pv_malaria_region_cases = country_cases_to_region_cases_per_1000(pv_malaria_data, region_population)
+    tuberculosis_region_cases = country_cases_to_region_cases_per_1000(tuberculosis_data, region_population)
+    escherichia_coli_region_cases = country_cases_to_region_cases_per_1000(escherichia_coli_data, region_population)
+    hepatitis_c_region_cases = country_cases_to_region_cases_per_1000(hepatitis_c_data, region_population)
+    staphylococcus_aureus_region_cases = country_cases_to_region_cases_per_1000(staphylococcus_aureus_data, region_population)
+
+
+    all_region_cases = [pf_malaria_region_cases, hiv_region_cases, polio_region_cases, pv_malaria_region_cases, tuberculosis_region_cases, escherichia_coli_region_cases, hepatitis_c_region_cases, staphylococcus_aureus_region_cases]
+
+    df = pd.DataFrame()
+    
+    extracted_cases_per_1000 = [df['Cases per 1000'] for df in all_region_cases]
+    df = pd.DataFrame(extracted_cases_per_1000, index=disease_names)
+
+    for i in range(len(df.columns)):
+        df.rename(columns={i: region_codes[i]}, inplace=True)
+
+    return df
+
+def get_research_per_region(disease, df, sources):
+    df['country_code'] = df['Country'].map(country_to_code)
+    df['region_code'] = df['country_code'].map(code_to_region_WHO)
+
+    df = df[df["Target Source Organism According to Curator or DataSource"].isin(sources)]
+    value_counts_region = df["region_code"].value_counts()
+    return value_counts_region
+
+def get_research_per_country(disease, df, sources):
+    df['country_code'] = df['Country'].map(country_to_code)
+    df = df[df["Target Source Organism According to Curator or DataSource"].isin(sources)]
+    value_counts_country = df["country_code"].value_counts()
+    return value_counts_country
 
 ### OLS functions
 
@@ -707,15 +743,15 @@ def normalize_rows_of_df(df):
     df = df.apply(lambda x: (x - mean) / std, axis=0)
     return df
 
-def research_of_diseases_per_country_df():
-    hiv = get_research_per_country('HIV',dx, HIV_sources)
-    tuberculosis = get_research_per_country('Tuberculosis',dx, Tuberculosis_sources)
-    hepatitis = get_research_per_country('Hepatitis',dx, Hepatitis_sources)
-    plasmodium_falciparum = get_research_per_country('Plasmodium falciparum',dx, Plasmodium_falciparum_sources)
-    poliovirus = get_research_per_country('Poliovirus',dx, Poliovirus_sources)
-    plasmodium_vivax = get_research_per_country('Plasmodium vivax',dx, Plasmodium_vivax_sources)
-    escherichia_coli = get_research_per_country('Escherichia coli',dx, Escherichia_coli_sources)
-    staphylococcus_aureus = get_research_per_country('Staphylococcus aureus',dx,Staphylococcus_aureus_sources)
+def research_of_diseases_per_country_df(df_research):
+    hiv = get_research_per_country('HIV',df_research, HIV_sources)
+    tuberculosis = get_research_per_country('Tuberculosis',df_research, Tuberculosis_sources)
+    hepatitis = get_research_per_country('Hepatitis',df_research, Hepatitis_C_sources)
+    plasmodium_falciparum = get_research_per_country('Plasmodium falciparum',df_research, Plasmodium_falciparum_sources)
+    poliovirus = get_research_per_country('Poliovirus',df_research, Poliovirus_sources)
+    plasmodium_vivax = get_research_per_country('Plasmodium vivax',df_research, Plasmodium_vivax_sources)
+    escherichia_coli = get_research_per_country('Escherichia coli',df_research, Escherichia_coli_sources)
+    staphylococcus_aureus = get_research_per_country('Staphylococcus aureus',df_research,Staphylococcus_aureus_sources)
 
     diseases_data = [plasmodium_falciparum, hiv, poliovirus, plasmodium_vivax, tuberculosis, escherichia_coli, hepatitis, staphylococcus_aureus]
     df_country = pd.DataFrame()
@@ -727,15 +763,15 @@ def research_of_diseases_per_country_df():
     df_country = normalize_rows_of_df(df_country)
     return df_country
 
-def research_of_diseases_per_region_df():
-    hiv = get_research_per_region('HIV',dx, HIV_sources)
-    tuberculosis = get_research_per_region('Tuberculosis',dx, Tuberculosis_sources)
-    hepatitis = get_research_per_region('Hepatitis',dx, Hepatitis_sources)
-    plasmodium_falciparum = get_research_per_region('Plasmodium falciparum',dx, Plasmodium_falciparum_sources)
-    poliovirus = get_research_per_region('Poliovirus',dx, Poliovirus_sources)
-    plasmodium_vivax = get_research_per_region('Plasmodium vivax',dx, Plasmodium_vivax_sources)
-    escherichia_coli = get_research_per_region('Escherichia coli',dx, Escherichia_coli_sources)
-    staphylococcus_aureus = get_research_per_region('Staphylococcus aureus',dx,Staphylococcus_aureus_sources)
+def research_of_diseases_per_region_df(df_research):
+    hiv = get_research_per_region('HIV',df_research, HIV_sources)
+    tuberculosis = get_research_per_region('Tuberculosis',df_research, Tuberculosis_sources)
+    hepatitis = get_research_per_region('Hepatitis',df_research, Hepatitis_C_sources)
+    plasmodium_falciparum = get_research_per_region('Plasmodium falciparum',df_research, Plasmodium_falciparum_sources)
+    poliovirus = get_research_per_region('Poliovirus',df_research, Poliovirus_sources)
+    plasmodium_vivax = get_research_per_region('Plasmodium vivax',df_research, Plasmodium_vivax_sources)
+    escherichia_coli = get_research_per_region('Escherichia coli',df_research, Escherichia_coli_sources)
+    staphylococcus_aureus = get_research_per_region('Staphylococcus aureus',df_research,Staphylococcus_aureus_sources)
 
     diseases_data = [plasmodium_falciparum, hiv, poliovirus, plasmodium_vivax, tuberculosis, escherichia_coli, hepatitis, staphylococcus_aureus]
     region_codes = ['AFR', 'AMR', 'EMR', 'EUR', 'SEAR', 'WPR']
@@ -752,7 +788,7 @@ def concatenate_disease_and_research_dfs(diseases_df, research_df):
     df = pd.concat([diseases_df_suffix, research_df_suffix], axis=1)
     return df
 
-def region_region_smf_model(data):
+def region_region_smf_model(df):
 
     region_codes_disease = 'AFR_disease + AMR_disease + EMR_disease + EUR_disease + SEAR_disease + WPR_disease'
     region_codes_research = ['AFR_research', 'AMR_research', 'EMR_research', 'EUR_research', 'SEAR_research', 'WPR_research']
@@ -796,7 +832,7 @@ def region_region_heatmap(coef_df, p_value_df):
     ax.set_xticklabels(coef_df.columns)
     ax.set_yticklabels(coef_df.index, rotation=0)
 
-def region_country_smf_model(data, research_column_names):
+def region_country_smf_model(df, research_column_names):
 
     region_codes_disease = 'AFR_disease + AMR_disease + EMR_disease + EUR_disease + SEAR_disease + WPR_disease'
     coef_df = pd.DataFrame()

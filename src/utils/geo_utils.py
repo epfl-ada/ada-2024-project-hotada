@@ -11,8 +11,8 @@ import numpy as np
 from matplotlib.patches import ConnectionPatch
 from matplotlib.gridspec import GridSpec
 
-api_key = ''
-stadia_key = ''
+api_key = 'AIzaSyA39Qg4fyA86_bg-tSF-Rr7nHsJfb5VTOc'
+stadia_key = '138f93a3-0b14-4cdc-b13e-832b7c5eb7a1'
 gmaps = googlemaps.Client(key=api_key)
 
 def get_map(located,tiles="Stadia.AlidadeSmooth"):
