@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 from sklearn.preprocessing import StandardScaler
 from sklearn.preprocessing import MinMaxScaler
 import plotly.express as px
+import plotly.io as pio
 import plotly.graph_objs as go
 import statsmodels.formula.api as smf
 
@@ -697,6 +698,183 @@ def plot_prevalence_wrt_research(df_research) :
     fig = create_interactive_plot(country_data_Staphylococcus_aureus, 'Staphylococcus_aureus')
     fig.show()  
 
+
+def download_interactive_plots(df_research) :
+    pf_malaria_country_cases = country_cases_to_cases_per_1000(pf_malaria_data, country_codes_no_population_data, country_populations)
+
+    polio_country_cases = country_cases_to_cases_per_1000(polio_data, country_codes_no_population_data, country_populations)
+
+    hiv_country_cases = country_cases_to_cases_per_1000(hiv_data, country_codes_no_population_data, country_populations)
+
+    pv_malaria_country_cases = country_cases_to_cases_per_1000(pv_malaria_data, country_codes_no_population_data, country_populations)
+
+    tuberculosis_country_cases = country_cases_per_x_to_cases_per_1000(tuberculosis_data, 1000, country_codes_no_population_data, country_populations)
+
+    escherichia_coli_country_cases = country_cases_per_x_to_cases_per_1000(escherichia_coli_data, 100, country_codes_no_population_data, country_populations)
+
+    hepatitis_c_country_cases = country_cases_per_x_to_cases_per_1000(hepatitis_c_data, 100, country_codes_no_population_data, country_populations)
+
+    staphylococcus_aureus_country_cases = country_cases_per_x_to_cases_per_1000(staphylococcus_aureus_data, 100, country_codes_no_population_data, country_populations)
+
+    #HIV
+    # print('HIV')
+
+    # df_HIV = df_research[df_research["Target Source Organism According to Curator or DataSource"].isin(HIV_sources)]
+    # research_counts_HIV_country = df_HIV["Code"].value_counts()
+    # country_data_HIV = pd.merge(
+    #     hiv_country_cases, 
+    #     research_counts_HIV_country, 
+    #     on='Code', 
+    #     how='outer'
+    # )
+    # country_data_HIV.fillna(0, inplace=True)
+
+    # country_data_HIV["Cases per 1000"] = (country_data_HIV["Cases per 1000"]-country_data_HIV["Cases per 1000"].min())/(country_data_HIV["Cases per 1000"].max() -country_data_HIV["Cases per 1000"].min())
+    # country_data_HIV["count"] = (country_data_HIV["count"]-country_data_HIV["count"].min())/(country_data_HIV["count"].max() -country_data_HIV["count"].min())
+
+    # fig = create_interactive_plot(country_data_HIV, 'HIV')
+    # pio.write_html(fig, "plot_HIV.html")
+
+    #Pf Malaria
+
+    print('Pf Malaria')
+
+    df_Plasmodium_falciparum = df_research[df_research["Target Source Organism According to Curator or DataSource"].isin(Plasmodium_falciparum_sources)]
+    research_counts_Plasmodium_falciparum_country = df_Plasmodium_falciparum["Code"].value_counts()
+    country_data_Plasmodium_falciparum = pd.merge(
+        pf_malaria_country_cases, 
+        research_counts_Plasmodium_falciparum_country, 
+        on='Code', 
+        how='outer'
+    )
+    country_data_Plasmodium_falciparum.fillna(0, inplace=True)
+
+    country_data_Plasmodium_falciparum["Cases per 1000"] = (country_data_Plasmodium_falciparum["Cases per 1000"]-country_data_Plasmodium_falciparum["Cases per 1000"].min())/(country_data_Plasmodium_falciparum["Cases per 1000"].max() -country_data_Plasmodium_falciparum["Cases per 1000"].min())
+    country_data_Plasmodium_falciparum["count"] = (country_data_Plasmodium_falciparum["count"]-country_data_Plasmodium_falciparum["count"].min())/(country_data_Plasmodium_falciparum["count"].max() -country_data_Plasmodium_falciparum["count"].min())
+
+    fig = create_interactive_plot(country_data_Plasmodium_falciparum, 'Plasmodium falciparum')
+    pio.write_html(fig, "plot_Plasmodium_falciparum.html")
+
+    # Poliovirus
+
+    print('Poliovirus')
+
+    df_Poliovirus = df_research[df_research["Target Source Organism According to Curator or DataSource"].isin(Poliovirus_sources)]
+    research_counts_Poliovirus_country = df_Poliovirus["Code"].value_counts()
+    country_data_Poliovirus = pd.merge(
+        polio_country_cases, 
+        research_counts_Poliovirus_country, 
+        on='Code', 
+        how='outer'
+    )
+    country_data_Poliovirus.fillna(0, inplace=True)
+
+    country_data_Poliovirus["Cases per 1000"] = (country_data_Poliovirus["Cases per 1000"]-country_data_Poliovirus["Cases per 1000"].min())/(country_data_Poliovirus["Cases per 1000"].max() -country_data_Poliovirus["Cases per 1000"].min())
+    country_data_Poliovirus["count"] = (country_data_Poliovirus["count"]-country_data_Poliovirus["count"].min())/(country_data_Poliovirus["count"].max() -country_data_Poliovirus["count"].min())
+
+    fig = create_interactive_plot(country_data_Poliovirus,'Poliovirus')
+    pio.write_html(fig, "plot_Poliovirus.html")
+
+    #Plasmodium vivax
+
+    print('Plasmodium vivax')
+
+    df_Plasmodium_vivax = df_research[df_research["Target Source Organism According to Curator or DataSource"].isin(Plasmodium_vivax_sources)]
+    research_counts_Plasmodium_vivax_country = df_Plasmodium_vivax["Code"].value_counts()
+    country_data_Plasmodium_vivax = pd.merge(
+        pv_malaria_country_cases, 
+        research_counts_Plasmodium_vivax_country, 
+        on='Code', 
+        how='outer'
+    )
+    country_data_Plasmodium_vivax.fillna(0, inplace=True)
+
+    country_data_Plasmodium_vivax["Cases per 1000"] = (country_data_Plasmodium_vivax["Cases per 1000"]-country_data_Plasmodium_vivax["Cases per 1000"].min())/(country_data_Plasmodium_vivax["Cases per 1000"].max() -country_data_Plasmodium_vivax["Cases per 1000"].min())
+    country_data_Plasmodium_vivax["count"] = (country_data_Plasmodium_vivax["count"]-country_data_Plasmodium_vivax["count"].min())/(country_data_Plasmodium_vivax["count"].max() -country_data_Plasmodium_vivax["count"].min())
+
+    fig = create_interactive_plot(country_data_Plasmodium_vivax, 'Plasmodium vivax')
+    pio.write_html(fig, "plot_Plasmodium_vivax.html")
+
+
+    #Tuberculosis
+
+    print('Tuberculosis')
+
+    df_Tuberculosis = df_research[df_research["Target Source Organism According to Curator or DataSource"].isin(Tuberculosis_sources)]
+    research_counts_Tuberculosis_country = df_Tuberculosis["Code"].value_counts()
+    country_data_Tuberculosis = pd.merge(
+        tuberculosis_country_cases, 
+        research_counts_Tuberculosis_country, 
+        on='Code', 
+        how='outer'
+    )
+    country_data_Tuberculosis.fillna(0, inplace=True)
+
+    country_data_Tuberculosis["Cases per 1000"] = (country_data_Tuberculosis["Cases per 1000"]-country_data_Tuberculosis["Cases per 1000"].min())/(country_data_Tuberculosis["Cases per 1000"].max() -country_data_Tuberculosis["Cases per 1000"].min())
+    country_data_Tuberculosis["count"] = (country_data_Tuberculosis["count"]-country_data_Tuberculosis["count"].min())/(country_data_Tuberculosis["count"].max() -country_data_Tuberculosis["count"].min())
+
+    fig = create_interactive_plot(country_data_Tuberculosis, 'Tuberculosis')
+    pio.write_html(fig, "plot_Tuberculosis.html")
+
+    #Hepatitis C
+
+    print('Hepatitis C')
+
+    df_Hepatitis_C = df_research[df_research["Target Source Organism According to Curator or DataSource"].isin(Hepatitis_C_sources)]
+    research_counts_Hepatitis_C_country = df_Hepatitis_C["Code"].value_counts()
+    country_data_Hepatitis_C = pd.merge(
+        hepatitis_c_country_cases, 
+        research_counts_Hepatitis_C_country, 
+        on='Code', 
+        how='outer'
+    )
+    country_data_Hepatitis_C.fillna(0, inplace=True)
+
+    country_data_Hepatitis_C["Cases per 1000"] = (country_data_Hepatitis_C["Cases per 1000"]-country_data_Hepatitis_C["Cases per 1000"].min())/(country_data_Hepatitis_C["Cases per 1000"].max() -country_data_Hepatitis_C["Cases per 1000"].min())
+    country_data_Hepatitis_C["count"] = (country_data_Hepatitis_C["count"]-country_data_Hepatitis_C["count"].min())/(country_data_Hepatitis_C["count"].max() -country_data_Hepatitis_C["count"].min())
+
+    fig = create_interactive_plot(country_data_Hepatitis_C, 'Hepatitis C')
+    pio.write_html(fig, "plot_Hepatitis_C.html")
+
+    #Escherichia coli
+
+    print('Escherichia coli')
+
+    df_Escherichia_coli = df_research[df_research["Target Source Organism According to Curator or DataSource"].isin(Escherichia_coli_sources)]
+    research_counts_Escherichia_coli_country = df_Escherichia_coli["Code"].value_counts()
+    country_data_Escherichia_coli = pd.merge(
+        escherichia_coli_country_cases, 
+        research_counts_Escherichia_coli_country, 
+        on='Code', 
+        how='outer'
+    )
+    country_data_Escherichia_coli.fillna(0, inplace=True)
+
+    country_data_Escherichia_coli["Cases per 1000"] = (country_data_Escherichia_coli["Cases per 1000"]-country_data_Escherichia_coli["Cases per 1000"].min())/(country_data_Escherichia_coli["Cases per 1000"].max() -country_data_Escherichia_coli["Cases per 1000"].min())
+    country_data_Escherichia_coli["count"] = (country_data_Escherichia_coli["count"]-country_data_Escherichia_coli["count"].min())/(country_data_Escherichia_coli["count"].max() -country_data_Escherichia_coli["count"].min())
+
+    fig = create_interactive_plot(country_data_Escherichia_coli, 'Escherichia coli')
+    pio.write_html(fig, "plot_Escherichia_coli.html") 
+
+    #Staphylococcus aureus
+
+    print('Staphylococcus aureus')
+
+    df_Staphylococcus_aureus = df_research[df_research["Target Source Organism According to Curator or DataSource"].isin(Staphylococcus_aureus_sources)]
+    research_counts_Staphylococcus_aureus_country = df_Staphylococcus_aureus["Code"].value_counts()
+    country_data_Staphylococcus_aureus = pd.merge(
+        staphylococcus_aureus_country_cases, 
+        research_counts_Staphylococcus_aureus_country, 
+        on='Code', 
+        how='outer'
+    )
+    country_data_Staphylococcus_aureus.fillna(0, inplace=True)
+
+    country_data_Staphylococcus_aureus["Cases per 1000"] = (country_data_Staphylococcus_aureus["Cases per 1000"]-country_data_Staphylococcus_aureus["Cases per 1000"].min())/(country_data_Staphylococcus_aureus["Cases per 1000"].max() -country_data_Staphylococcus_aureus["Cases per 1000"].min())
+    country_data_Staphylococcus_aureus["count"] = (country_data_Staphylococcus_aureus["count"]-country_data_Staphylococcus_aureus["count"].min())/(country_data_Staphylococcus_aureus["count"].max() -country_data_Staphylococcus_aureus["count"].min())
+
+    fig = create_interactive_plot(country_data_Staphylococcus_aureus, 'Staphylococcus_aureus')
+    pio.write_html(fig, "plot_Staphylococcus_aureus.html")  
 
 def df_regional_prevalence_for_each_disease():
     pf_malaria_region_cases = country_cases_to_region_cases_per_1000(pf_malaria_data, region_population)

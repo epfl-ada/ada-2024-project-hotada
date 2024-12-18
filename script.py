@@ -3,6 +3,22 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 
+HIV_sources = ['Human immunodeficiency virus 1', 'Human immunodeficiency virus', 'Human immunodeficiency virus type 1 group M subtype B (isolate BRU/LAI)', 'Human immunodeficiency virus type 1 group M subtype B (isolate YU-2)', 'Human immunodeficiency virus type 1 group M subtype B (isolate HXB2)', 'Human immunodeficiency virus 2', 'Human immunodeficiency virus type 1 group M subtype B (isolate PCV12)', 'Human immunodeficiency virus type 1 group M subtype B (isolate MN)']
+
+Plasmodium_falciparum_sources = ['Plasmodium falciparum', 'Plasmodium falciparum (isolate 3D7)', 'Plasmodium falciparum (isolate K1 / Thailand)', 'Plasmodium falciparum (isolate FcB1 / Columbia)']
+
+Poliovirus_sources = ['Poliovirus type 1 (strain Mahoney)']
+
+Plasmodium_vivax_sources = ['Plasmodium vivax']
+
+Tuberculosis_sources = ['Mycobacterium tuberculosis', 'Mycobacterium tuberculosis H37Rv']
+
+Hepatitis_C_sources = ['Hepatitis C virus', 'Hepatitis C virus genotype 1a (isolate H)', 'Hepatitis C virus genotype 1b (isolate BK)', 'Hepatitis C virus genotype 3a (isolate NZL1)', 'Hepatitis C virus genotype 2b (isolate HC-J8)', 'Hepatitis C virus genotype 1b (isolate Taiwan)', 'Hepatitis C virus genotype 2', 'Hepatitis C virus genotype 4a (isolate ED43)', 'Hepatitis C virus genotype 6a (isolate EUHK2)']
+
+Escherichia_coli_sources = ['Escherichia coli', 'Escherichia coli str. K-12 substr. MG1655', 'Escherichia coli (strain UTI89 / UPEC)', 'Escherichia coli (strain K12)', 'Escherichia coli O157:H7', 'Escherichia coli O6']
+
+Staphylococcus_aureus_sources = ['Staphylococcus aureus', 'Staphylococcus aureus (strain MRSA252)', 'Staphylococcus aureus (strain Mu50 / ATCC 700699)', 'Staphylococcus aureus (strain MW2)', 'Staphylococcus aureus (strain NCTC 8325)']
+
 def read_tsv(file_path) :
     'Returns the data in path as a dataframe'
     return pd.read_csv(file_path, sep='\t',encoding='utf-8',on_bad_lines='skip')
@@ -89,6 +105,23 @@ def plot_proportions_of_experiments_given_TSO(df) :
     plt.title("Proportions of experiments given TSO")
     plt.show()
 
+def plot_Number_of_experiments_w_r_t_sources(df) :
+    plt.bar(['HIV','Tuberculosis','Hepatitis','Plasmodium falciparum','Poliovirus','Staphylococcus aureus','Plasmodium vivax','Escherichia coli'],
+
+        [len(df[df["Target Source Organism According to Curator or DataSource"].isin(HIV_sources)]),
+         len(df[df["Target Source Organism According to Curator or DataSource"].isin(Tuberculosis_sources)]),
+         len(df[df["Target Source Organism According to Curator or DataSource"].isin(Hepatitis_C_sources)]),
+         len(df[df["Target Source Organism According to Curator or DataSource"].isin(Plasmodium_falciparum_sources)]),
+         len(df[df["Target Source Organism According to Curator or DataSource"].isin(Poliovirus_sources)]),
+         len(df[df["Target Source Organism According to Curator or DataSource"].isin(Staphylococcus_aureus_sources)]),
+         len(df[df["Target Source Organism According to Curator or DataSource"].isin(Plasmodium_vivax_sources)]),
+        len(df[df["Target Source Organism According to Curator or DataSource"].isin(Escherichia_coli_sources)])]
+    )
+    plt.xticks(rotation=-45,ha='left')
+    plt.xlabel('Source')
+    plt.ylabel('Number of experiments')
+    plt.title('Number of experiments w.r.t. sources')
+    plt.show()
     
 country_to_code =  {
     'United States': 'USA',
