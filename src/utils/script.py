@@ -2,7 +2,6 @@
 
 import pandas as pd
 import matplotlib.pyplot as plt
-import seaborn as sns
 
 HIV_sources = ['Human immunodeficiency virus 1', 'Human immunodeficiency virus', 'Human immunodeficiency virus type 1 group M subtype B (isolate BRU/LAI)', 'Human immunodeficiency virus type 1 group M subtype B (isolate YU-2)', 'Human immunodeficiency virus type 1 group M subtype B (isolate HXB2)', 'Human immunodeficiency virus 2', 'Human immunodeficiency virus type 1 group M subtype B (isolate PCV12)', 'Human immunodeficiency virus type 1 group M subtype B (isolate MN)']
 
@@ -106,125 +105,363 @@ def plot_proportions_of_experiments_given_TSO(df) :
     plt.title("Proportions of experiments given TSO")
     plt.show()
 
+def plot_Number_of_experiments_w_r_t_sources(df) :
+    plt.bar(['HIV','Tuberculosis','Hepatitis','Plasmodium falciparum','Poliovirus','Staphylococcus aureus','Plasmodium vivax','Escherichia coli'],
+
+        [len(df[df["Target Source Organism According to Curator or DataSource"].isin(HIV_sources)]),
+         len(df[df["Target Source Organism According to Curator or DataSource"].isin(Tuberculosis_sources)]),
+         len(df[df["Target Source Organism According to Curator or DataSource"].isin(Hepatitis_C_sources)]),
+         len(df[df["Target Source Organism According to Curator or DataSource"].isin(Plasmodium_falciparum_sources)]),
+         len(df[df["Target Source Organism According to Curator or DataSource"].isin(Poliovirus_sources)]),
+         len(df[df["Target Source Organism According to Curator or DataSource"].isin(Staphylococcus_aureus_sources)]),
+         len(df[df["Target Source Organism According to Curator or DataSource"].isin(Plasmodium_vivax_sources)]),
+        len(df[df["Target Source Organism According to Curator or DataSource"].isin(Escherichia_coli_sources)])]
+    )
+    plt.xticks(rotation=-45,ha='left')
+    plt.xlabel('Source')
+    plt.ylabel('Number of experiments')
+    plt.title('Number of experiments w.r.t. sources')
+    plt.show()
+    
+country_to_code =  {
+    'United States': 'USA',
+    'China': 'CHN',
+    'Germany': 'DEU',
+    'Italy': 'ITA',
+    'United Kingdom': 'GBR',
+    'France': 'FRA',
+    'India': 'IND',
+    'Japan': 'JPN',
+    'South Korea': 'KOR',
+    'Canada': 'CAN',
+    'Switzerland': 'CHE',
+    'Poland': 'POL',
+    'Australia': 'AUS',
+    'Belgium': 'BEL',
+    'Netherlands': 'NLD',
+    'Spain': 'ESP',
+    'Denmark': 'DNK',
+    'Sweden': 'SWE',
+    'Egypt': 'EGY',
+    'New Zealand': 'NZL',
+    'Lithuania': 'LTU',
+    'Israel': 'ISR',
+    'Austria': 'AUT',
+    'South Africa': 'ZAF',
+    'Pakistan': 'PAK',
+    'Singapore': 'SGP',
+    'Slovenia': 'SVN',
+    'Greece': 'GRC',
+    'Finland': 'FIN',
+    'Russia': 'RUS',
+    'Brazil': 'BRA',
+    'Iran': 'IRN',
+    'Saudi Arabia': 'SAU',
+    'Portugal': 'PRT',
+    'Malaysia': 'MYS',
+    'Thailand': 'THA',
+    'Norway': 'NOR',
+    'Hungary': 'HUN',
+    'Bangladesh': 'BGD',
+    'Mexico': 'MEX',
+    'Argentina': 'ARG',
+    'Jordan': 'JOR',
+    'United Arab Emirates': 'ARE',
+    'Slovakia': 'SVK',
+    'Ireland': 'IRL',
+    'Romania': 'ROU',
+    'Chile': 'CHL',
+    'Serbia': 'SRB',
+    'Philippines': 'PHL',
+    'Estonia': 'EST',
+    'Ukraine': 'UKR',
+    'Monaco': 'MCO',
+    'Colombia': 'COL',
+    'Croatia': 'HRV',
+    'Morocco': 'MAR',
+    'Tunisia': 'TUN',
+    'Indonesia': 'IDN',
+    'Latvia': 'LVA',
+    'Vietnam': 'VNM',
+    'Ecuador': 'ECU',
+    'Bulgaria': 'BGR',
+    'Zambia': 'ZMB',
+    'Venezuela': 'VEN',
+    'Lebanon': 'LBN',
+    'Rwanda': 'RWA',
+    'Oman': 'OMN',
+    'Luxembourg': 'LUX',
+    'Cyprus': 'CYP',
+    'Uruguay': 'URY',
+    'Botswana': 'BWA',
+    'Algeria': 'DZA',
+    'Grenada': 'GRD',
+    'Jamaica': 'JAM',
+    'Kuwait': 'KWT',
+    'Sudan': 'SDN',
+    'Peru': 'PER',
+    'Qatar': 'QAT',
+    'Zimbabwe': 'ZWE',
+    'Bosnia and Herzegovina': 'BIH',
+    'Sri Lanka': 'LKA',
+    'Nepal': 'NPL',
+    'Armenia': 'ARM',
+    'Kenya': 'KEN',
+    'Cuba': 'CUB',
+    'Ethiopia': 'ETH',
+    'Nigeria': 'NGA'
+}
+
+code_to_region_WHO ={
+ 'ABW': 'AMR',
+ 'AFG': 'EMR',
+ 'AGO': 'AFR',
+ 'AIA': 'AMR',
+ 'ALB': 'EUR',
+ 'AND': 'EUR',
+ 'ARE': 'EMR',
+ 'ARG': 'AMR',
+ 'ARM': 'EUR',
+ 'ASM': 'WPR',
+ 'ATG': 'AMR',
+ 'AUS': 'WPR',
+ 'AUT': 'EUR',
+ 'AZE': 'EUR',
+ 'BDI': 'AFR',
+ 'BEL': 'EUR',
+ 'BEN': 'AFR',
+ 'BES': 'AMR',
+ 'BFA': 'AFR',
+ 'BGD': 'SEAR',
+ 'BGR': 'EUR',
+ 'BHR': 'EMR',
+ 'BHS': 'AMR',
+ 'BIH': 'EUR',
+ 'BLR': 'EUR',
+ 'BLZ': 'AMR',
+ 'BMU': 'AMR',
+ 'BOL': 'AMR',
+ 'BRA': 'AMR',
+ 'BRB': 'AMR',
+ 'BRN': 'WPR',
+ 'BTN': 'SEAR',
+ 'BWA': 'AFR',
+ 'CAF': 'AFR',
+ 'CAN': 'AMR',
+ 'CHE': 'EUR',
+ 'CHL': 'AMR',
+ 'CHN': 'WPR',
+ 'CIV': 'AFR',
+ 'CMR': 'AFR',
+ 'COD': 'AFR',
+ 'COG': 'AFR',
+ 'COK': 'WPR',
+ 'COL': 'AMR',
+ 'COM': 'AFR',
+ 'CPV': 'AFR',
+ 'CRI': 'AMR',
+ 'CUB': 'AMR',
+ 'CUW': 'AMR',
+ 'CYM': 'AMR',
+ 'CYP': 'EUR',
+ 'CZE': 'EUR',
+ 'DEU': 'EUR',
+ 'DJI': 'EMR',
+ 'DMA': 'AMR',
+ 'DNK': 'EUR',
+ 'DOM': 'AMR',
+ 'DZA': 'AFR',
+ 'ECU': 'AMR',
+ 'EGY': 'EMR',
+ 'ERI': 'AFR',
+ 'ESP': 'EUR',
+ 'EST': 'EUR',
+ 'ETH': 'AFR',
+ 'FIN': 'EUR',
+ 'FJI': 'WPR',
+ 'FLK': 'AMR',
+ 'FRA': 'EUR',
+ 'FRO': 'EUR',
+ 'FSM': 'WPR',
+ 'GAB': 'AFR',
+ 'GBR': 'EUR',
+ 'GEO': 'EUR',
+ 'GHA': 'AFR',
+ 'GIB': 'EUR',
+ 'GIN': 'AFR',
+ 'GLP': 'AMR',
+ 'GMB': 'AFR',
+ 'GNB': 'AFR',
+ 'GNQ': 'AFR',
+ 'GRC': 'EUR',
+ 'GRD': 'AMR',
+ 'GRL': 'EUR',
+ 'GTM': 'AMR',
+ 'GUF': 'AMR',
+ 'GUM': 'WPR',
+ 'GUY': 'AMR',
+ 'HND': 'AMR',
+ 'HRV': 'EUR',
+ 'HTI': 'AMR',
+ 'HUN': 'EUR',
+ 'IDN': 'SEAR',
+ 'IMN': 'EUR',
+ 'IND': 'SEAR',
+ 'IRL': 'EUR',
+ 'IRN': 'EMR',
+ 'IRQ': 'EMR',
+ 'ISL': 'EUR',
+ 'ISR': 'EUR',
+ 'ITA': 'EUR',
+ 'JAM': 'AMR',
+ 'JOR': 'EMR',
+ 'JPN': 'WPR',
+ 'KAZ': 'EUR',
+ 'KEN': 'AFR',
+ 'KGZ': 'EUR',
+ 'KHM': 'WPR',
+ 'KIR': 'WPR',
+ 'KNA': 'AMR',
+ 'KOR': 'WPR',
+ 'KWT': 'EMR',
+ 'LAO': 'WPR',
+ 'LBN': 'EMR',
+ 'LBR': 'AFR',
+ 'LBY': 'EMR',
+ 'LCA': 'AMR',
+ 'LIE': 'EUR',
+ 'LKA': 'SEAR',
+ 'LSO': 'AFR',
+ 'LTU': 'EUR',
+ 'LUX': 'EUR',
+ 'LVA': 'EUR',
+ 'MAR': 'EMR',
+ 'MCO': 'EUR',
+ 'MDA': 'EUR',
+ 'MDG': 'AFR',
+ 'MDV': 'SEAR',
+ 'MEX': 'AMR',
+ 'MHL': 'WPR',
+ 'MKD': 'EUR',
+ 'MLI': 'AFR',
+ 'MLT': 'EUR',
+ 'MMR': 'SEAR',
+ 'MNE': 'EUR',
+ 'MNG': 'WPR',
+ 'MNP': 'WPR',
+ 'MOZ': 'AFR',
+ 'MRT': 'AFR',
+ 'MSR': 'AMR',
+ 'MTQ': 'AMR',
+ 'MUS': 'AFR',
+ 'MWI': 'AFR',
+ 'MYS': 'WPR',
+ 'MYT': 'AFR',
+ 'NAM': 'AFR',
+ 'NCL': 'WPR',
+ 'NER': 'AFR',
+ 'NGA': 'AFR',
+ 'NIC': 'AMR',
+ 'NIU': 'WPR',
+ 'NLD': 'EUR',
+ 'NOR': 'EUR',
+ 'NPL': 'SEAR',
+ 'NRU': 'WPR',
+ 'NZL': 'WPR',
+ 'OMN': 'EMR',
+ 'PAK': 'EMR',
+ 'PAN': 'AMR',
+ 'PER': 'AMR',
+ 'PHL': 'WPR',
+ 'PLW': 'WPR',
+ 'PNG': 'WPR',
+ 'POL': 'EUR',
+ 'PRI': 'AMR',
+ 'PRK': 'SEAR',
+ 'PRT': 'EUR',
+ 'PRY': 'AMR',
+ 'PSE': 'EMR',
+ 'PYF': 'WPR',
+ 'QAT': 'EMR',
+ 'REU': 'AFR',
+ 'ROU': 'EUR',
+ 'RUS': 'EUR',
+ 'RWA': 'AFR',
+ 'SAU': 'EMR',
+ 'SDN': 'EMR',
+ 'SDN736': 'EMR',
+ 'SEN': 'AFR',
+ 'SGP': 'WPR',
+ 'SHN': 'AFR',
+ 'SLB': 'WPR',
+ 'SLE': 'AFR',
+ 'SLV': 'AMR',
+ 'SMR': 'EUR',
+ 'SOM': 'EMR',
+ 'SPM': 'AMR',
+ 'SRB': 'EUR',
+ 'SSD': 'AFR',
+ 'STP': 'AFR',
+ 'SUR': 'AMR',
+ 'SVK': 'EUR',
+ 'SVN': 'EUR',
+ 'SWE': 'EUR',
+ 'SWZ': 'AFR',
+ 'SXM': 'AMR',
+ 'SYC': 'AFR',
+ 'SYR': 'EMR',
+ 'TCA': 'AMR',
+ 'TCD': 'AFR',
+ 'TGO': 'AFR',
+ 'THA': 'SEAR',
+ 'TJK': 'EUR',
+ 'TKL': 'WPR',
+ 'TKM': 'EUR',
+ 'TLS': 'SEAR',
+ 'TON': 'WPR',
+ 'TTO': 'AMR',
+ 'TUN': 'EMR',
+ 'TUR': 'EUR',
+ 'TUV': 'WPR',
+ 'TZA': 'AFR',
+ 'UGA': 'AFR',
+ 'UKR': 'EUR',
+ 'URY': 'AMR',
+ 'USA': 'AMR',
+ 'UZB': 'EUR',
+ 'VCT': 'AMR',
+ 'VEN': 'AMR',
+ 'VGB': 'AMR',
+ 'VIR': 'AMR',
+ 'VNM': 'WPR',
+ 'VUT': 'WPR',
+ 'WLF': 'WPR',
+ 'WSM': 'WPR',
+ 'YEM': 'EMR',
+ 'ZAF': 'AFR',
+ 'ZMB': 'AFR',
+ 'ZWE': 'AFR'
+}
+
 
 def plot_disease(disease, df, sources) :  
 
     df = df[df["Target Source Organism According to Curator or DataSource"].isin(sources)]
-    value_counts_country = df["Code"].value_counts().head(10)
+    value_counts_country = df["Country"].value_counts().head(10)
     value_counts_continent = df["Continent"].value_counts().head(10)
     fig, axes = plt.subplots(1, 2, figsize=(12, 6))
 
-    # Plot for countries
     axes[0].bar(value_counts_country.index, value_counts_country.values, color='skyblue')
-    axes[0].set_xticks(range(len(value_counts_country.index)))  # Set tick positions explicitly
-    axes[0].set_xticklabels(value_counts_country.index, rotation=-45, ha='left')  # Set tick labels
+    axes[0].set_xticklabels(axes[0].get_xticklabels(), rotation=-45, ha='left')
     axes[0].set_xlabel('Country')
     axes[0].set_ylabel(f'Number of experiments on {disease}')
     axes[0].set_title(f'Number of experiments on {disease} w.r.t. Country')
 
-    # Plot for continents
     axes[1].bar(value_counts_continent.index, value_counts_continent.values)
-    axes[1].set_xticks(range(len(value_counts_continent.index)))  # Set tick positions explicitly
-    axes[1].set_xticklabels(value_counts_continent.index, rotation=-45, ha='left')  # Set tick labels
+    axes[1].set_xticklabels(axes[1].get_xticklabels(), rotation=-45, ha='left')
     axes[1].set_xlabel('Continent')
     axes[1].set_ylabel(f'Number of experiments on {disease}')
-    axes[1].set_title(f'Number of experiments on {disease} w.r.t. Continent')
+    axes[1].set_title(f'Number of experiments on {disease} w.r.t. Countinent')
 
     plt.tight_layout()
-    plt.show()
-
-def heatmap_research(df_research) :
-    
-    regions = ['AFR', 'AMR', 'EMR', 'EUR', 'SEAR', 'WPR']
-
-    HIV_sources = ['Human immunodeficiency virus 1', 'Human immunodeficiency virus', 'Human immunodeficiency virus type 1 group M subtype B (isolate BRU/LAI)', 'Human immunodeficiency virus type 1 group M subtype B (isolate YU-2)', 'Human immunodeficiency virus type 1 group M subtype B (isolate HXB2)', 'Human immunodeficiency virus 2', 'Human immunodeficiency virus type 1 group M subtype B (isolate PCV12)', 'Human immunodeficiency virus type 1 group M subtype B (isolate MN)']
-    df_HIV = df_HIV = df_research[df_research["Target Source Organism According to Curator or DataSource"].isin(HIV_sources)]
-
-    Plasmodium_falciparum_sources = ['Plasmodium falciparum', 'Plasmodium falciparum (isolate 3D7)', 'Plasmodium falciparum (isolate K1 / Thailand)', 'Plasmodium falciparum (isolate FcB1 / Columbia)']
-    df_Plasmodium_falciparum = df_research[df_research["Target Source Organism According to Curator or DataSource"].isin(Plasmodium_falciparum_sources)]
-
-    Poliovirus_sources = ['Poliovirus type 1 (strain Mahoney)']
-    df_Poliovirus = df_research[df_research["Target Source Organism According to Curator or DataSource"].isin(Poliovirus_sources)]
-
-    Plasmodium_vivax_sources = ['Plasmodium vivax']
-    df_Plasmodium_vivax = df_research[df_research["Target Source Organism According to Curator or DataSource"].isin(Plasmodium_vivax_sources)]
-
-    Tuberculosis_sources = ['Mycobacterium tuberculosis', 'Mycobacterium tuberculosis H37Rv']
-    df_Tuberculosis = df_research[df_research["Target Source Organism According to Curator or DataSource"].isin(Tuberculosis_sources)]
-
-    Hepatitis_C_sources = ['Hepatitis C virus', 'Hepatitis C virus genotype 1a (isolate H)', 'Hepatitis C virus genotype 1b (isolate BK)', 'Hepatitis C virus genotype 3a (isolate NZL1)', 'Hepatitis C virus genotype 2b (isolate HC-J8)', 'Hepatitis C virus genotype 1b (isolate Taiwan)', 'Hepatitis C virus genotype 2', 'Hepatitis C virus genotype 4a (isolate ED43)', 'Hepatitis C virus genotype 6a (isolate EUHK2)']
-    df_Hepatitis_C = df_research[df_research["Target Source Organism According to Curator or DataSource"].isin(Hepatitis_C_sources)]
-
-    Escherichia_coli_sources = ['Escherichia coli', 'Escherichia coli str. K-12 substr. MG1655', 'Escherichia coli (strain UTI89 / UPEC)', 'Escherichia coli (strain K12)', 'Escherichia coli O157:H7', 'Escherichia coli O6']
-    df_Escherichia_coli = df_research[df_research["Target Source Organism According to Curator or DataSource"].isin(Escherichia_coli_sources)]
-
-    Staphylococcus_aureus_sources = ['Staphylococcus aureus', 'Staphylococcus aureus (strain MRSA252)', 'Staphylococcus aureus (strain Mu50 / ATCC 700699)', 'Staphylococcus aureus (strain MW2)', 'Staphylococcus aureus (strain NCTC 8325)']
-    df_Staphylococcus_aureus = df_research[df_research["Target Source Organism According to Curator or DataSource"].isin(Staphylococcus_aureus_sources)]
-
-    HIV_research_counts = dict(df_HIV['Continent'].value_counts())
-    Plasmodium_falciparum_research_counts = dict(df_Plasmodium_falciparum['Continent'].value_counts())
-    Poliovirus_research_counts = dict(df_Poliovirus['Continent'].value_counts())
-    Plasmodium_vivax_research_counts = dict(df_Plasmodium_vivax['Continent'].value_counts())
-    Tuberculosis_research_counts = dict(df_Tuberculosis['Continent'].value_counts())
-    Hepatitis_C_research_counts = dict(df_Hepatitis_C['Continent'].value_counts())
-    Escherichia_coli_research_counts = dict(df_Escherichia_coli['Continent'].value_counts())
-    Staphylococcus_aureus_research_counts = dict(df_Staphylococcus_aureus['Continent'].value_counts())
-
-    for region in regions :
-        if region not in HIV_research_counts :
-            HIV_research_counts[region] = 0
-        if region not in Plasmodium_falciparum_research_counts :
-            Plasmodium_falciparum_research_counts[region] = 0
-        if region not in Poliovirus_research_counts :
-            Poliovirus_research_counts[region] = 0
-        if region not in Plasmodium_vivax_research_counts :
-            Plasmodium_vivax_research_counts[region] = 0
-        if region not in Tuberculosis_research_counts :
-            Tuberculosis_research_counts[region] = 0
-        if region not in Hepatitis_C_research_counts :
-            Hepatitis_C_research_counts[region] = 0
-        if region not in Escherichia_coli_research_counts :
-            Escherichia_coli_research_counts[region] = 0
-        if region not in Staphylococcus_aureus_research_counts :
-            Staphylococcus_aureus_research_counts[region] = 0
-
-    
-
-# Assuming the data dictionary is already created
-    data = {
-    'HIV': HIV_research_counts,
-    'Plasmodium_falciparum': Plasmodium_falciparum_research_counts,
-    'Poliovirus': Poliovirus_research_counts,
-    'Plasmodium_vivax': Plasmodium_vivax_research_counts,
-    'Tuberculosis': Tuberculosis_research_counts,
-    'Hepatitis_C': Hepatitis_C_research_counts,
-    'Escherichia_coli': Escherichia_coli_research_counts,
-    'Staphylococcus_aureus': Staphylococcus_aureus_research_counts
-    }
-
-    # Convert to DataFrame 
-    df_heatmap = pd.DataFrame(data)
-
-    df_normalized = (df_heatmap - df_heatmap.min()) / (df_heatmap.max() - df_heatmap.min())
-    df_standardized = (df_heatmap - df_heatmap.mean()) / df_heatmap.std()
-
-    # Transpose the DataFrame to invert axess
-    df_standardized_transposed = df_standardized.T
-    df_normalized_transposed = df_normalized.T
-    df_standardized_transposed = df_standardized_transposed[regions]
-    df_normalized_transposed = df_normalized_transposed[regions]
-
-    # Plot the heatmap with the 'RdBu' color palette
-    plt.figure(figsize=(12, 8))
-    sns.heatmap(df_normalized_transposed, annot=False, cmap='coolwarm', fmt='g')
-
-    # Set plot title and labels
-    plt.title('Number of Research Studies by Disease and Continent')
-    plt.xlabel('Continent')
-    plt.ylabel('Disease')
-
-    # Ensure the x-axis labels are horizontal
-    plt.xticks(rotation=0)
-
-    # Display the heatmap
     plt.show()
