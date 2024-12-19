@@ -145,7 +145,7 @@ def plot_disease(disease, df, sources) :
     axes[1].set_xticklabels(value_counts_continent.index, rotation=-45, ha='left')  # Set tick labels
     axes[1].set_xlabel('Continent')
     axes[1].set_ylabel(f'Number of experiments on {disease}')
-    axes[1].set_title(f'Number of experiments on {disease} w.r.t. Continent')
+    axes[1].set_title(f'Number of experiments on {disease} w.r.t. Region')
 
     plt.tight_layout()
     plt.show()
