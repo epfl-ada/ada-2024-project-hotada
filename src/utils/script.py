@@ -236,8 +236,8 @@ def heatmap_research(df_research) :
     sns.heatmap(df_normalized_transposed, annot=False, cmap='coolwarm', fmt='g')
 
     # Set plot title and labels
-    plt.title('Number of Research Studies by Disease and Continent')
-    plt.xlabel('Continent')
+    plt.title('Number of Research Studies by Disease (Normalized) and Region')
+    plt.xlabel('Research')
     plt.ylabel('Disease')
 
     # Ensure the x-axis labels are horizontal
