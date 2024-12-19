@@ -500,8 +500,8 @@ def create_interactive_plot(country_data, disease):
         },
         title=f'Research Experiments vs {disease} Prevalence by Country',
         labels={
-            'Cases per 1000': f'{disease} Prevalence (Cases per 1000 People)', 
-            'count': 'Number of Research Experiments'
+            'Cases per 1000': f'{disease} Prevalence (Normalized)', 
+            'count': 'Number of Research Experiments (Normalized)'
         },
         color_discrete_sequence=['blue']
     )
@@ -717,23 +717,23 @@ def download_interactive_plots(df_research) :
     staphylococcus_aureus_country_cases = country_cases_per_x_to_cases_per_1000(staphylococcus_aureus_data, 100, country_codes_no_population_data, country_populations)
 
     #HIV
-    # print('HIV')
+    print('HIV')
 
-    # df_HIV = df_research[df_research["Target Source Organism According to Curator or DataSource"].isin(HIV_sources)]
-    # research_counts_HIV_country = df_HIV["Code"].value_counts()
-    # country_data_HIV = pd.merge(
-    #     hiv_country_cases, 
-    #     research_counts_HIV_country, 
-    #     on='Code', 
-    #     how='outer'
-    # )
-    # country_data_HIV.fillna(0, inplace=True)
+    df_HIV = df_research[df_research["Target Source Organism According to Curator or DataSource"].isin(HIV_sources)]
+    research_counts_HIV_country = df_HIV["Code"].value_counts()
+    country_data_HIV = pd.merge(
+        hiv_country_cases, 
+        research_counts_HIV_country, 
+        on='Code', 
+        how='outer'
+    )
+    country_data_HIV.fillna(0, inplace=True)
 
-    # country_data_HIV["Cases per 1000"] = (country_data_HIV["Cases per 1000"]-country_data_HIV["Cases per 1000"].min())/(country_data_HIV["Cases per 1000"].max() -country_data_HIV["Cases per 1000"].min())
-    # country_data_HIV["count"] = (country_data_HIV["count"]-country_data_HIV["count"].min())/(country_data_HIV["count"].max() -country_data_HIV["count"].min())
+    country_data_HIV["Cases per 1000"] = (country_data_HIV["Cases per 1000"]-country_data_HIV["Cases per 1000"].min())/(country_data_HIV["Cases per 1000"].max() -country_data_HIV["Cases per 1000"].min())
+    country_data_HIV["count"] = (country_data_HIV["count"]-country_data_HIV["count"].min())/(country_data_HIV["count"].max() -country_data_HIV["count"].min())
 
-    # fig = create_interactive_plot(country_data_HIV, 'HIV')
-    # pio.write_html(fig, "plot_HIV.html")
+    fig = create_interactive_plot(country_data_HIV, 'HIV')
+    pio.write_html(fig, "plot_HIV.html")
 
     #Pf Malaria
 
