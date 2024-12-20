@@ -1,5 +1,7 @@
 # Predicting Drug-Drug Interactions Based on Likeness and Geographical Prevalence
 
+Website: https://ekaterina-borisova.github.io/ada_website/](https://ekaterina-borisova.github.io/ada_website/)
+
 ## Abstract 
 What impact does geography have on the development of drugs? Specifically, does drug's origin matter in drug-drug interaction? The development of pharmaceuticals is a collaborative effort that often reflects the expertise and innovation of the institutions behind them. This project aims to investigate whether drugs developed within the same institutions exhibit superior interaction profiles compared to those developed independently. One may hypothesise that shared research environments, methodologies, and collaborative networks contribute to a higher likelihood of favorable interactions among drugs originating from the same institution. 
 
