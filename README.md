@@ -1,4 +1,4 @@
-# Predicting Drug-Drug Interactions Based on Likeness and Geographical Prevalence
+# Predicting Drug-Drug Interactions Based on Likeness and Geographical Research Trends
 
 ### Website: [https://ekaterina-borisova.github.io/ada_website/](https://ekaterina-borisova.github.io/ada_website/)
 
