@@ -5,6 +5,7 @@
 ### Contribution of each team member:
 **Ekaterina Borisova**: worked on DDI and created all the prediction models as well as BioBert embedding and data analysis from DrugBank.
 **Alexandra Krasnova**: worked on the likeness of the drug and have done all the work related to its analysis.
+
 **Amine Zghal**: worked on the geographical analysis togther with Sverre and Lucas. I worked on the parts "Some Analysis on BindingDB dataset", "Target based insights" and together with Sverre I worked on the parts "WHO database" and "Prevalence-Research Analysis".
 
 ## Abstract 
